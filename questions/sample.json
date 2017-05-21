@@ -1,0 +1,27 @@
+{
+  "type": "wildcard",
+  "question": "What is the question with the answer 42?",
+  "requiredAnswers": "1",
+  "answer": [
+    {
+      "index": "0",
+      "text": "How much is nine times six."
+    }
+  ],
+  "possibilities": [
+    {
+      "index": "0",
+      "text": "How much is seven times six?"
+    },
+    {
+      "index": "1",
+      "text": "How much is nine times six?"
+    },
+    {
+      "index": "2",
+      "text": "What is the answer to all questions?"
+    }
+  ],
+  "difficulty": 1,
+  "status": "draft"
+}
