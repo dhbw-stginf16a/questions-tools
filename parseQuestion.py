@@ -52,6 +52,7 @@ for question in questions:
     if (question["status"] == "approved"):
         approvedQuestions.append(question)
 
+    print("Kategory: " +  question["category"])
     print("Question: " + question["question"] + "\n \n")
 
     if (len(question["possibilities"]) > 0):
