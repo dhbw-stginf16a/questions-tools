@@ -1,0 +1,5 @@
+.answerRow:correct{
+    -fx-border-color: chartreuse;
+    -fx-border-width: 2px;
+}
+
