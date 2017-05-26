@@ -2,9 +2,9 @@
   "type": "wildcard",
   "question": "What is the question with the answer 42?",
   "requiredAnswers": "1",
-  "answer": [
+  "answers": [
     {
-      "index": "0",
+      "index": "1",
       "text": "How much is nine times six."
     }
   ],

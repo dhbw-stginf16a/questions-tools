@@ -3,9 +3,9 @@ import json
 import glob, os
 import sys, getopt
 
-def generateJSON(questions):
+def generateJSON(categories):
     # Undo former chdir
-    os.chdir("..")
+    #os.chdir("..")
     # TODO: Rework versioning
     version = 0.1
     exportFile = ""
@@ -25,12 +25,14 @@ def generateJSON(questions):
         # Reopen to write new content
         exportFile = open("questions.json", "w")
     except Exception as e:
-        print(e)
         print("No file found, will create one for you")
         exportFile = open("questions.json", "w")
     data = {}
     data["version"] = version
-    data["questions"] = questions
+    data["categories"] = {}
+    for category in categories:
+        categoryName = category[0]["category"]
+        data["categories"][categoryName] = category
     jsonData = json.dumps(data)
     exportFile.write(jsonData)
     exportFile.close()
@@ -38,30 +40,38 @@ def generateJSON(questions):
 def generatePDF(questions):
     pass
 
-path = os.getcwd()
-path += "/questions"
-os.chdir(path)
-questions = []
-for question in glob.glob("*.json"):
-    with open(question, encoding='utf-8') as data_file:
-        data = json.loads(data_file.read())
-        questions.append(data)
+#path = os.getcwd()
+#path += "/questions"
+#os.chdir(path)
+categories = []
+for directory in glob.glob("questions/*"):
+    print(directory)
+    questions = []
+    for question in glob.glob(directory + "/*.json"):
+        print(questions)
+        with open(question, encoding='utf-8') as data_file:
+            data = json.loads(data_file.read())
+            questions.append(data)
+    categories.append(questions)
 
-approvedQuestions = []
-for question in questions:
-    if (question["status"] == "approved"):
-        approvedQuestions.append(question)
+# Save approved questions and print all questions for verification
+approvedCategories = []
+for questions in categories:
+    approvedQuestions = []
+    for question in questions:
+        if (question["status"] == "approved"):
+            approvedQuestions.append(question)
+            print("Kategory: " +  question["category"])
+            print("Question: " + question["question"] + "\n \n")
 
-    print("Kategory: " +  question["category"])
-    print("Question: " + question["question"] + "\n \n")
+            if (len(question["possibilities"]) > 0):
+                for possibility in question["possibilities"]:
+                    print(possibility["index"] + ": " + possibility["text"] + "\n")
 
-    if (len(question["possibilities"]) > 0):
-        for possibility in question["possibilities"]:
-            print(possibility["index"] + ": " + possibility["text"] + "\n")
-
-    for answer in question["answer"]:
-        print("Answer: " + answer["text"])
-    print("##############################################")
+                    for answer in question["answers"]:
+                        print("Answer: " + answer["text"])
+                        print("##############################################")
+    approvedCategories.append(approvedQuestions)
 
 if(len(sys.argv) > 1):
     opts, args = getopt.getopt(sys.argv[1:],"hj:p:",["generate-json","generate-pdf"])
@@ -74,8 +84,8 @@ if(len(sys.argv) > 1):
          print("parseQuestions.py --generate-pdf")
          sys.exit()
       elif (opt in ("-j", "--generate-json")):
-         generateJSON(approvedQuestions)
+         generateJSON(approvedCategories)
       elif (opt in ("-p", "--generate-pdf")):
          print("Not yet implemented -- exiting")
          sys.exit()
-         generatePDF(approvedQuestions)
+         generatePDF(approvedCategories)
