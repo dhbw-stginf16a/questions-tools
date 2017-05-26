@@ -42,7 +42,7 @@ public class Project implements Changed {
 
     @JsonIgnore
     public String getPath(ProjectCategory category) {
-        return path + "\\" + category.getCategoryName();
+        return path + File.separator + category.getCategoryName();
     }
 
     public void setPath(String path) {
