@@ -1,10 +1,7 @@
 package stginf16a.pm.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import stginf16a.pm.questions.Category;
-
-import java.io.File;
 
 /**
  * Created by Czichotzki on 22.05.2017.
@@ -25,6 +22,12 @@ public class ProjectCategory {
 
     }
 
+    public static ProjectCategory fromCategory(Category category) {
+        ProjectCategory result = new ProjectCategory(category.getName());
+        category.setProjectCategory(result);
+        return result;
+    }
+
     public String getCategoryName() {
         return categoryName;
     }
@@ -33,16 +36,13 @@ public class ProjectCategory {
         this.categoryName = categoryName;
     }
 
-    public static ProjectCategory fromCategory(Category category){
-        return new ProjectCategory(category.getName());
-    }
-
     public Category getCategory() {
         return category;
     }
 
     public void setCategory(Category category) {
         this.category = category;
+        this.category.setProjectCategory(this);
     }
 
     public String getCategoryDirectoryName() {

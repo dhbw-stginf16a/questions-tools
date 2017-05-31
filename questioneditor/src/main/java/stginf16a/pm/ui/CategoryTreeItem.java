@@ -3,29 +3,51 @@ package stginf16a.pm.ui;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextInputDialog;
+import stginf16a.pm.json.QuestionManager;
 import stginf16a.pm.questions.Category;
 import stginf16a.pm.questions.Question;
 import stginf16a.pm.wrapper.QuestionWrapper;
+
+import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * Created by Czichotzki on 21.05.2017.
  */
 public class CategoryTreeItem extends AbstractTreeItem{
 
-    public CategoryTreeItem(Category category){
+    private final Consumer<QuestionWrapper> parentDeleteQuestion;
+    private QuestionManager manager;
+    private Category category;
+
+    private HashMap<QuestionWrapper, QuestionTreeItem> treeItemHashMap;
+
+    public CategoryTreeItem(Category category, Consumer<QuestionWrapper> deleteQuestion, Consumer<Category> deleteCategory) {
         super();
+        this.category = category;
+        this.treeItemHashMap = new HashMap<>();
+        this.manager = manager;
+
+        this.parentDeleteQuestion = deleteQuestion;
 
         MenuItem deleteMenuItem = new MenuItem("Delete");
-        deleteMenuItem.setDisable(true);//TODO: Implement functionality
+
         MenuItem newQuestionMenuItem = new MenuItem("New Question");
         MenuItem renameCategory = new MenuItem("Rename");
+
+        menu.setOnShown(event -> {
+            deleteMenuItem.setDisable(!this.getChildren().isEmpty());
+        });
 
         newQuestionMenuItem.setOnAction(event -> {
             Question question = new Question();
             question.setCategoryName(category.getName());
             QuestionWrapper wrapper = new QuestionWrapper(question);
             category.getQuestions().add(wrapper);
-            this.getChildren().add(new QuestionTreeItem(wrapper, true));
+            QuestionTreeItem treeItem = new QuestionTreeItem(wrapper, this::deleteQuestion, true);
+            wrapper.setCategory(category);
+            treeItemHashMap.put(wrapper, treeItem);
+            this.getChildren().add(treeItem);
         });
 
         renameCategory.setOnAction(event -> {
@@ -40,12 +62,24 @@ public class CategoryTreeItem extends AbstractTreeItem{
             }
         });
 
+        deleteMenuItem.setOnAction(event -> {
+            deleteCategory.accept(this.category);
+        });
+
         menu.getItems().addAll(deleteMenuItem, renameCategory, new SeparatorMenuItem(), newQuestionMenuItem);
 
         this.setValue(category.getName());
         this.questionProperty().setValue(category.getName());
         for(QuestionWrapper q: category.getQuestions()){
-            this.getChildren().add(new QuestionTreeItem(q, false));
+            QuestionTreeItem treeItem = new QuestionTreeItem(q, this::deleteQuestion, false);
+            treeItemHashMap.put(q, treeItem);
+            this.getChildren().add(treeItem);
         }
+    }
+
+    public void deleteQuestion(QuestionWrapper question) {
+        this.getChildren().remove(treeItemHashMap.get(question));
+        treeItemHashMap.remove(question);
+        this.parentDeleteQuestion.accept(question);
     }
 }

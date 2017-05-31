@@ -89,4 +89,24 @@ public class QuestionManager {
         }
     }
 
+    public void deleteQuestion(QuestionWrapper question, File file) {
+        File f = new File(file.getAbsolutePath() + File.separator + question.getOriginal().getId().toString() + ".json");
+        if (f.exists()) {
+            f.delete();
+        }
+    }
+
+    public void deleteQuestion(QuestionWrapper question) {
+        File f = new File(project.getPath(question.getCategory().getProjectCategory()));
+        deleteQuestion(question, f);
+        question.getCategory().getQuestions().remove(question);
+    }
+
+    public void deleteCategory(ProjectCategory category) {
+        File f = new File(project.getPath(category));
+        if (f.exists()) {
+            f.delete();
+        }
+    }
+
 }

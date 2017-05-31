@@ -28,6 +28,8 @@ public class QuestionWrapper implements Changed{
     private ListProperty<AnswerWrapper> answers = null;
     private ListProperty<AnswerWrapper> possibilities = null;
 
+    private Category category;
+
     public QuestionWrapper(Question question){
         this.q = question;
         this.changed = false;
@@ -39,6 +41,10 @@ public class QuestionWrapper implements Changed{
 
     public QuestionType getType() {
         return typeProperty().get();
+    }
+
+    public void setType(QuestionType type) {
+        this.typeProperty().set(type);
     }
 
     public ObjectProperty<QuestionType> typeProperty() {
@@ -62,12 +68,12 @@ public class QuestionWrapper implements Changed{
         return type;
     }
 
-    public void setType(QuestionType type) {
-        this.typeProperty().set(type);
-    }
-
     public QuestionDifficulty getDifficulty() {
         return difficultyProperty().get();
+    }
+
+    public void setDifficulty(QuestionDifficulty difficulty) {
+        this.difficultyProperty().set(difficulty);
     }
 
     public ObjectProperty<QuestionDifficulty> difficultyProperty() {
@@ -78,12 +84,12 @@ public class QuestionWrapper implements Changed{
         return difficulty;
     }
 
-    public void setDifficulty(QuestionDifficulty difficulty) {
-        this.difficultyProperty().set(difficulty);
-    }
-
     public QuestionStatus getStatus() {
         return statusProperty().get();
+    }
+
+    public void setStatus(QuestionStatus status) {
+        this.statusProperty().set(status);
     }
 
     public ObjectProperty<QuestionStatus> statusProperty() {
@@ -94,12 +100,12 @@ public class QuestionWrapper implements Changed{
         return status;
     }
 
-    public void setStatus(QuestionStatus status) {
-        this.statusProperty().set(status);
-    }
-
     public String getQuestion() {
         return questionProperty().get();
+    }
+
+    public void setQuestion(String question) {
+        this.questionProperty().set(question);
     }
 
     public StringProperty questionProperty() {
@@ -110,12 +116,12 @@ public class QuestionWrapper implements Changed{
         return question;
     }
 
-    public void setQuestion(String question) {
-        this.questionProperty().set(question);
-    }
-
     public int getNumberOfCorrectAnswers() {
         return numberOfCorrectAnswersProperty().get();
+    }
+
+    public void setNumberOfCorrectAnswers(int numberOfCorrectAnswers) {
+        this.numberOfCorrectAnswersProperty().set(numberOfCorrectAnswers);
     }
 
     public IntegerProperty numberOfCorrectAnswersProperty() {
@@ -126,12 +132,12 @@ public class QuestionWrapper implements Changed{
         return numberOfCorrectAnswers;
     }
 
-    public void setNumberOfCorrectAnswers(int numberOfCorrectAnswers) {
-        this.numberOfCorrectAnswersProperty().set(numberOfCorrectAnswers);
-    }
-
     public ObservableList<AnswerWrapper> getAnswers() {
         return answersProperty().get();
+    }
+
+    public void setAnswers(ObservableList<AnswerWrapper> answers) {
+        this.answersProperty().set(answers);
     }
 
     public ListProperty<AnswerWrapper> answersProperty() {
@@ -162,12 +168,12 @@ public class QuestionWrapper implements Changed{
         return answers;
     }
 
-    public void setAnswers(ObservableList<AnswerWrapper> answers) {
-        this.answersProperty().set(answers);
-    }
-
     public ObservableList<AnswerWrapper> getPossibilities() {
         return possibilitiesProperty().get();
+    }
+
+    public void setPossibilities(ObservableList<AnswerWrapper> possibilities) {
+        this.possibilitiesProperty().set(possibilities);
     }
 
     public ListProperty<AnswerWrapper> possibilitiesProperty() {
@@ -198,12 +204,12 @@ public class QuestionWrapper implements Changed{
         return possibilities;
     }
 
-    public void setPossibilities(ObservableList<AnswerWrapper> possibilities) {
-        this.possibilitiesProperty().set(possibilities);
-    }
-
     public UUID getId() {
         return id.get();
+    }
+
+    public void setId(UUID id) {
+        this.id.set(id);
     }
 
     public ObjectProperty<UUID> idProperty() {
@@ -211,10 +217,6 @@ public class QuestionWrapper implements Changed{
             id = new SimpleObjectProperty<>(q.getId());
         }
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id.set(id);
     }
 
     private void switchAnswersToPossibilities(){
@@ -239,6 +241,10 @@ public class QuestionWrapper implements Changed{
         return changed || answersChanged();
     }
 
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
+
     private boolean answersChanged() {
         for (AnswerWrapper answer :
                 answersProperty().get()) {
@@ -257,11 +263,15 @@ public class QuestionWrapper implements Changed{
         return false;
     }
 
-    public void setChanged(boolean changed) {
-        this.changed = changed;
-    }
-
     public void changed(){
         setChanged(true);
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

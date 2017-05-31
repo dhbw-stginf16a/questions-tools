@@ -16,7 +16,10 @@ import stginf16a.pm.json.ProjectCategory;
 import stginf16a.pm.json.ProjectLoader;
 import stginf16a.pm.json.QuestionManager;
 import stginf16a.pm.questions.*;
-import stginf16a.pm.ui.*;
+import stginf16a.pm.ui.AbstractTreeItem;
+import stginf16a.pm.ui.AnswerTableRow;
+import stginf16a.pm.ui.QuestionTreeItem;
+import stginf16a.pm.ui.RootTreeItem;
 import stginf16a.pm.util.NestedObjectProperty;
 import stginf16a.pm.wrapper.AnswerWrapper;
 import stginf16a.pm.wrapper.QuestionWrapper;
@@ -76,7 +79,7 @@ public class MainController implements Initializable {
         project = new SimpleObjectProperty<>();
 
         project.addListener(((observable, oldValue, newValue) -> {
-            RootTreeItem rootTree = new RootTreeItem(newValue.getCategoriesList());
+            RootTreeItem rootTree = new RootTreeItem(newValue.getCategoriesList(), this::deleteQuestion, this::deleteCategory);
             rootTreeItem.setValue(rootTree);
         }));
 
@@ -161,6 +164,19 @@ public class MainController implements Initializable {
         answerTableView.setRowFactory(tv -> new AnswerTableRow(selectedQuestion, answerTableView));
 
         idLabel.textProperty().bind(new NestedObjectProperty<>(selectedQuestion, QuestionWrapper::idProperty, false).asString());
+    }
+
+    public void deleteCategory(Category category) {
+        project.get().getCategories().remove(category.getProjectCategory());
+        QuestionManager manager = new QuestionManager(this.project.get());
+        manager.deleteCategory(category.getProjectCategory());
+        questionTableTree.refresh();
+    }
+
+    public void deleteQuestion(QuestionWrapper question) {
+        QuestionManager manager = new QuestionManager(this.project.get());
+        manager.deleteQuestion(question);
+        questionTableTree.refresh();
     }
 
     private void updateAnswerTableBinding(QuestionType oldValue, QuestionType newValue) {
@@ -269,7 +285,7 @@ public class MainController implements Initializable {
             cat.setName(dialog.getResult());
             pcat.setCategory(cat);
             project.get().getCategories().add(pcat);
-            rootTreeItem.get().getChildren().add(new CategoryTreeItem(cat));
+            rootTreeItem.get().addChild(cat);
         }
     }
 }

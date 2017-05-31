@@ -1,5 +1,9 @@
 package stginf16a.pm.questions;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import stginf16a.pm.json.ProjectCategory;
 import stginf16a.pm.wrapper.QuestionWrapper;
 
 import java.util.ArrayList;
@@ -11,15 +15,30 @@ import java.util.List;
 public class Category {
 
     private String name;
-    private List<QuestionWrapper> questions;
+    private ObservableList<QuestionWrapper> questions;
+    private ProjectCategory projectCategory;
 
     public Category(String name, List<QuestionWrapper> questions){
         this.name = name;
-        this.questions = questions;
+        for (QuestionWrapper q : questions
+                ) {
+            q.setCategory(this);
+        }
+        this.questions = FXCollections.observableArrayList(questions);
+        this.questions.addListener((ListChangeListener.Change<? extends QuestionWrapper> c) -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    for (QuestionWrapper q :
+                            c.getAddedSubList()) {
+                        q.setCategory(this);
+                    }
+                }
+            }
+        });
     }
 
     public Category(){
-        this.questions = new ArrayList<>();
+        this.questions = FXCollections.observableArrayList(new ArrayList<>());
     }
 
     public String getName() {
@@ -39,6 +58,14 @@ public class Category {
     }
 
     public void setQuestions(List<QuestionWrapper> questions) {
-        this.questions = questions;
+        this.questions = FXCollections.observableArrayList(questions);
+    }
+
+    public ProjectCategory getProjectCategory() {
+        return projectCategory;
+    }
+
+    public void setProjectCategory(ProjectCategory projectCategory) {
+        this.projectCategory = projectCategory;
     }
 }
