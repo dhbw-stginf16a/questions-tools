@@ -82,4 +82,13 @@ public class CategoryTreeItem extends AbstractTreeItem{
         treeItemHashMap.remove(question);
         this.parentDeleteQuestion.accept(question);
     }
+
+    public void addCopyQuestion(QuestionWrapper question) {
+        QuestionWrapper wrapper = QuestionWrapper.copy(question);
+        category.getQuestions().add(wrapper);
+        QuestionTreeItem treeItem = new QuestionTreeItem(wrapper, this::deleteQuestion, true);
+        wrapper.setCategory(category);
+        treeItemHashMap.put(wrapper, treeItem);
+        this.getChildren().add(treeItem);
+    }
 }

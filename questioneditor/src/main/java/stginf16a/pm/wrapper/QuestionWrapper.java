@@ -35,6 +35,11 @@ public class QuestionWrapper implements Changed{
         this.changed = false;
     }
 
+    public static QuestionWrapper copy(QuestionWrapper question) {
+        Question newQ = Question.copy(question.getOriginal());
+        return new QuestionWrapper(newQ);
+    }
+
     public Question getOriginal(){
         return q;
     }

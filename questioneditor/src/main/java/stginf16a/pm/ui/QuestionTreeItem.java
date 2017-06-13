@@ -1,6 +1,7 @@
 package stginf16a.pm.ui;
 
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TreeItem;
 import stginf16a.pm.json.QuestionManager;
 import stginf16a.pm.wrapper.QuestionWrapper;
 
@@ -29,7 +30,14 @@ public class QuestionTreeItem extends AbstractTreeItem{
         deleteMenuItem.setOnAction(event -> {
             deleteQuestion.accept(this.question);
         });
-        this.menu.getItems().add(deleteMenuItem);
+        MenuItem duplicateMenuItem = new MenuItem("Duplicate");
+        duplicateMenuItem.setOnAction(event -> {
+            TreeItem<?> treeItem = this.getParent();
+            if (treeItem instanceof CategoryTreeItem) {
+                ((CategoryTreeItem) treeItem).addCopyQuestion(this.question);
+            }
+        });
+        this.menu.getItems().addAll(deleteMenuItem, duplicateMenuItem);
     }
 
 }

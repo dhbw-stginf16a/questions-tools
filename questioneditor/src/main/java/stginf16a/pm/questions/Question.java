@@ -39,6 +39,19 @@ public class Question {
         this(QuestionType.WILDCARD);
     }
 
+    @JsonIgnore
+    public static Question copy(Question original) {
+        Question q = new Question();
+        q.answers = new ArrayList<>(original.answers);
+        q.categoryName = original.categoryName;
+        q.difficulty = original.difficulty;
+        q.numberOfCorrectAnswers = original.numberOfCorrectAnswers;
+        q.possibilities = new ArrayList<>(original.possibilities);
+        q.question = original.question;
+        q.type = original.type;
+        return q;
+    }
+
     public QuestionType getType() {
         return type;
     }
@@ -117,12 +130,12 @@ public class Question {
         return super.equals(obj);
     }
 
+    public String getCategoryName() {
+        return this.categoryName;
+    }
+
     @JsonIgnore
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
-    }
-
-    public String getCategoryName(){
-        return this.categoryName;
     }
 }
