@@ -73,12 +73,15 @@ public class QuestionManager {
         Question question = mapper.readValue(file, Question.class);
         String id = file.getName().replace(".json", "");
         question.setId(UUID.fromString(id));
-        return new QuestionWrapper(question);
+        QuestionWrapper wrapper = new QuestionWrapper(question);
+        wrapper.setQuestionHash(ProjectLoader.calcHash(file));
+        return wrapper;
     }
 
     private void saveQuestion(QuestionWrapper question, File file) throws IOException {
         File f = new File(file.getAbsolutePath() + File.separator + question.getOriginal().getId().toString() + ".json");
         mapper.writeValue(f, question.getOriginal());
+        question.setQuestionHash(ProjectLoader.calcHash(f));
     }
 
     public void saveQuestion(QuestionWrapper question, ProjectCategory category) throws IOException {

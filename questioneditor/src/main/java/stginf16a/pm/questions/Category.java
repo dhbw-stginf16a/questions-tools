@@ -3,9 +3,11 @@ package stginf16a.pm.questions;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import stginf16a.pm.json.Project;
 import stginf16a.pm.json.ProjectCategory;
 import stginf16a.pm.wrapper.QuestionWrapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,5 +69,14 @@ public class Category {
 
     public void setProjectCategory(ProjectCategory projectCategory) {
         this.projectCategory = projectCategory;
+    }
+
+    public boolean checkHash(Project project) throws IOException {
+        for (QuestionWrapper questionWrapper : this.getQuestions()) {
+            if (!questionWrapper.checkHash(project)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -1,11 +1,16 @@
 package stginf16a.pm.wrapper;
 
+import com.google.common.hash.HashCode;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import stginf16a.pm.json.Project;
+import stginf16a.pm.json.ProjectLoader;
 import stginf16a.pm.questions.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -29,6 +34,7 @@ public class QuestionWrapper implements Changed{
     private ListProperty<AnswerWrapper> possibilities = null;
 
     private Category category;
+    private HashCode questionHash;
 
     public QuestionWrapper(Question question){
         this.q = question;
@@ -278,5 +284,28 @@ public class QuestionWrapper implements Changed{
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public File genQuestionFileLocation(Project project) {
+        File f = new File(project.getPath(this.getCategory().getProjectCategory()) + File.separator + this.getOriginal().getId().toString() + ".json");
+        return f;
+    }
+
+    public HashCode getQuestionHash() {
+        return questionHash;
+    }
+
+    public void setQuestionHash(HashCode questionHash) {
+        this.questionHash = questionHash;
+    }
+
+    public boolean checkHash(Project p) throws IOException {
+        if (!this.isChanged() || this.getQuestionHash() == null) {
+            return true;
+        }
+        if (ProjectLoader.calcHash(this.genQuestionFileLocation(p)).equals(this.getQuestionHash())) {
+            return true;
+        }
+        return false;
     }
 }

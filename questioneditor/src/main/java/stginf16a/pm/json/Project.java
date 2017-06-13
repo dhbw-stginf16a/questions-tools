@@ -1,6 +1,7 @@
 package stginf16a.pm.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.hash.HashCode;
 import stginf16a.pm.questions.Category;
 import stginf16a.pm.questions.Changed;
 
@@ -20,6 +21,8 @@ public class Project implements Changed {
     private boolean changed;
     @JsonIgnore
     private File projectFile;
+    @JsonIgnore
+    private HashCode projectHash;
 
     public static Project getDefaultProject() {
         Project p = new Project();
@@ -88,4 +91,13 @@ public class Project implements Changed {
     public void setProjectFile(File projectFile) {
         this.projectFile = projectFile;
     }
+
+    public HashCode getProjectHash() {
+        return projectHash;
+    }
+
+    public void setProjectHash(HashCode projectHash) {
+        this.projectHash = projectHash;
+    }
+
 }

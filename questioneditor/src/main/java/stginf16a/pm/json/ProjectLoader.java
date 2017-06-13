@@ -1,6 +1,9 @@
 package stginf16a.pm.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
+import com.google.common.io.Files;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +18,30 @@ public class ProjectLoader {
         Project p = mapper.readValue(projectFile, Project.class);
         p.setPath(projectFile.getParent());
         p.setProjectFile(projectFile);
+        p.setProjectHash(calcHash(projectFile));
         return p;
+    }
+
+    public static HashCode calcHash(File file) throws IOException {
+        return Files.hash(file, Hashing.crc32());
+    }
+
+    public static boolean checkHash(Project project) throws IOException {
+        if (project.getProjectHash() == null) {
+            return true;
+        }
+        if (!calcHash(project.getProjectFile()).equals(project.getProjectHash())) {
+            return false;
+        }
+
+        for (ProjectCategory cat :
+                project.getCategories()) {
+            if (!cat.getCategory().checkHash(project)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static void saveProject(Project project, File projectFile) throws IOException {
@@ -34,6 +60,7 @@ public class ProjectLoader {
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(projectFile, project);
+        project.setProjectHash(calcHash(projectFile));
     }
 
     private static void updateDirectoryName(Project project, String oldName, ProjectCategory cat) {
@@ -82,5 +109,9 @@ public class ProjectLoader {
             File dir = new File(p.getPath(c));
             dir.mkdir();
         }
+    }
+
+    public static Project mergeProjects(Project oldProject, Project newProject) {
+        return null; //TODO: Implement
     }
 }
