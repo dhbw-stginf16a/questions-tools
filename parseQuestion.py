@@ -4,10 +4,7 @@ import glob, os
 import sys, getopt
 
 def generateJSON(categories):
-    # Undo former chdir
-    #os.chdir("..")
-    # TODO: Rework versioning
-    version = 0.1
+    version = "1.0"
     exportFile = ""
     try:
         oldData = open("questions.json", "r")
@@ -40,9 +37,6 @@ def generateJSON(categories):
 def generatePDF(questions):
     pass
 
-#path = os.getcwd()
-#path += "/questions"
-#os.chdir(path)
 categories = []
 for directory in glob.glob("questions/*"):
     print(directory)
