@@ -28,6 +28,9 @@ def generateJSON(categories):
     data["version"] = version
     data["categories"] = {}
     for category in categories:
+        if (len(category) == 0):
+            continue
+            # No approved questions
         categoryName = category[0]["category"]
         data["categories"][categoryName] = category
     jsonData = json.dumps(data)
@@ -42,7 +45,6 @@ for directory in glob.glob("questions/*"):
     print(directory)
     questions = []
     for question in glob.glob(directory + "/*.json"):
-        print(questions)
         with open(question, encoding='utf-8') as data_file:
             data = json.loads(data_file.read())
             questions.append(data)
@@ -53,18 +55,18 @@ approvedCategories = []
 for questions in categories:
     approvedQuestions = []
     for question in questions:
-        if (question["status"] == "approved"):
+        if (question["status"] == "approved" and question["category"] != "Test"):
             approvedQuestions.append(question)
-            print("Kategory: " +  question["category"])
-            print("Question: " + question["question"] + "\n \n")
+        print("Category: " +  question["category"])
+        print("Question: " + question["question"] + "\n \n")
 
-            if (len(question["possibilities"]) > 0):
-                for possibility in question["possibilities"]:
-                    print(possibility["index"] + ": " + possibility["text"] + "\n")
+        if (len(question["possibilities"]) > 0):
+            for possibility in question["possibilities"]:
+                print(str(possibility["index"]) + ": " + possibility["text"] + "\n")
 
-                    for answer in question["answers"]:
-                        print("Answer: " + answer["text"])
-                        print("##############################################")
+        for answer in question["answers"]:
+            print("Answer: " + answer["text"])
+            print("##############################################")
     approvedCategories.append(approvedQuestions)
 
 if(len(sys.argv) > 1):
