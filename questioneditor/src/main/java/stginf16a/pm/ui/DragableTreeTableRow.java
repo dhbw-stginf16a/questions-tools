@@ -34,7 +34,7 @@ public class DragableTreeTableRow extends TreeTableRow<Object> {
 
         this.setOnDragOver(event -> {
             if (!this.isEmpty() && (this.getItem() instanceof Category)) {
-                if (this.getItem() != dragContainer.getTreeItem()) {
+                if (this.getItem() != dragContainer.getCategory()) {
                     event.acceptTransferModes(TransferMode.MOVE);
                 }
                 event.consume();
