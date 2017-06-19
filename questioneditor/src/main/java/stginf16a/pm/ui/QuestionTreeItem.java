@@ -14,11 +14,14 @@ public class QuestionTreeItem extends AbstractTreeItem{
 
     QuestionWrapper question;
     QuestionManager manager;
+    Consumer<QuestionWrapper> deleteQuestion;
 
     public QuestionTreeItem(QuestionWrapper question, Consumer<QuestionWrapper> deleteQuestion, boolean newQuestion) {
         this.question= question;
         this.manager = manager;
         this.setValue(this.question);
+        this.deleteQuestion = deleteQuestion;
+        this.question.setTreeItem(this);
         if(newQuestion){
             this.question.changed();
         }
@@ -28,7 +31,7 @@ public class QuestionTreeItem extends AbstractTreeItem{
 
         MenuItem deleteMenuItem = new MenuItem("Delete");
         deleteMenuItem.setOnAction(event -> {
-            deleteQuestion.accept(this.question);
+            delete();
         });
         MenuItem duplicateMenuItem = new MenuItem("Duplicate");
         duplicateMenuItem.setOnAction(event -> {
@@ -38,6 +41,10 @@ public class QuestionTreeItem extends AbstractTreeItem{
             }
         });
         this.menu.getItems().addAll(deleteMenuItem, duplicateMenuItem);
+    }
+
+    public void delete() {
+        deleteQuestion.accept(this.question);
     }
 
 }

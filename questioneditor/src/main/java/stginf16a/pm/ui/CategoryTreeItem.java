@@ -8,7 +8,6 @@ import stginf16a.pm.questions.Category;
 import stginf16a.pm.questions.Question;
 import stginf16a.pm.wrapper.QuestionWrapper;
 
-import java.util.HashMap;
 import java.util.function.Consumer;
 
 /**
@@ -20,12 +19,11 @@ public class CategoryTreeItem extends AbstractTreeItem{
     private QuestionManager manager;
     private Category category;
 
-    private HashMap<QuestionWrapper, QuestionTreeItem> treeItemHashMap;
-
     public CategoryTreeItem(Category category, Consumer<QuestionWrapper> deleteQuestion, Consumer<Category> deleteCategory) {
         super();
         this.category = category;
-        this.treeItemHashMap = new HashMap<>();
+        this.category.setTreeItem(this);
+        this.setValue(category);
         this.manager = manager;
 
         this.parentDeleteQuestion = deleteQuestion;
@@ -46,7 +44,7 @@ public class CategoryTreeItem extends AbstractTreeItem{
             category.getQuestions().add(wrapper);
             QuestionTreeItem treeItem = new QuestionTreeItem(wrapper, this::deleteQuestion, true);
             wrapper.setCategory(category);
-            treeItemHashMap.put(wrapper, treeItem);
+            //treeItemHashMap.put(wrapper, treeItem);
             this.getChildren().add(treeItem);
         });
 
@@ -57,7 +55,6 @@ public class CategoryTreeItem extends AbstractTreeItem{
             dialog.showAndWait();
             if(dialog.getResult()!=null){
                 category.setName(dialog.getResult());
-                this.setValue(dialog.getResult());
                 this.questionProperty().setValue(category.getName());
             }
         });
@@ -68,18 +65,15 @@ public class CategoryTreeItem extends AbstractTreeItem{
 
         menu.getItems().addAll(deleteMenuItem, renameCategory, new SeparatorMenuItem(), newQuestionMenuItem);
 
-        this.setValue(category.getName());
         this.questionProperty().setValue(category.getName());
         for(QuestionWrapper q: category.getQuestions()){
             QuestionTreeItem treeItem = new QuestionTreeItem(q, this::deleteQuestion, false);
-            treeItemHashMap.put(q, treeItem);
             this.getChildren().add(treeItem);
         }
     }
 
     public void deleteQuestion(QuestionWrapper question) {
-        this.getChildren().remove(treeItemHashMap.get(question));
-        treeItemHashMap.remove(question);
+        this.getChildren().remove(question.getTreeItem());
         this.parentDeleteQuestion.accept(question);
     }
 
@@ -88,7 +82,6 @@ public class CategoryTreeItem extends AbstractTreeItem{
         category.getQuestions().add(wrapper);
         QuestionTreeItem treeItem = new QuestionTreeItem(wrapper, this::deleteQuestion, true);
         wrapper.setCategory(category);
-        treeItemHashMap.put(wrapper, treeItem);
         this.getChildren().add(treeItem);
     }
 }

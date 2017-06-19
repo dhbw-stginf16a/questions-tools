@@ -50,7 +50,7 @@ public class QuestionManager {
         for (QuestionWrapper q :
                 category.getCategory().getQuestions()) {
             if(q.isChanged()) {
-                saveQuestion(q, f);
+                saveQuestion(q);
                 q.setChanged(false);
             }
         }
@@ -63,6 +63,7 @@ public class QuestionManager {
         for (File file :
                 files != null ? files : new File[0]) {
             QuestionWrapper q = loadQuestion(file);
+            q.setOldCategory(category);
             q.getOriginal().setCategoryName(category.getCategoryName());
             result.add(q);
         }
@@ -84,11 +85,27 @@ public class QuestionManager {
         question.setQuestionHash(ProjectLoader.calcHash(f));
     }
 
-    public void saveQuestion(QuestionWrapper question, ProjectCategory category) throws IOException {
-        if(question.isChanged()) {
-            File f = new File(project.getPath(category));
+    public void saveQuestion(QuestionWrapper question) throws IOException {
+        if (question.isChanged() || question.isMoved()) {
+            File f = new File(project.getPath(question.getCategory().getProjectCategory()));
             saveQuestion(question, f);
             question.setChanged(false);
+            question.setMoved(false);
+            question.setOldCategory(question.getCategory().getProjectCategory());
+        }
+    }
+
+    public void moveQuestion(QuestionWrapper question) throws IOException {
+        if (question.isMoved()) {
+            question.setOldCategory(question.getCategory().getProjectCategory());
+            question.setMoved(false);
+            File f = new File(project.getPath(question.getCategory().getProjectCategory()));
+            if (f.exists()) {
+                saveQuestion(question, f);
+                question.setChanged(false);
+            } else {
+                question.setChanged(true);
+            }
         }
     }
 

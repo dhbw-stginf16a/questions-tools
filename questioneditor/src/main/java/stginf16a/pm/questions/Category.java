@@ -5,6 +5,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import stginf16a.pm.json.Project;
 import stginf16a.pm.json.ProjectCategory;
+import stginf16a.pm.ui.CategoryTreeItem;
 import stginf16a.pm.wrapper.QuestionWrapper;
 
 import java.io.IOException;
@@ -15,10 +16,11 @@ import java.util.List;
  * Created by Czichotzki on 21.05.2017.
  */
 public class Category {
-
     private String name;
     private ObservableList<QuestionWrapper> questions;
     private ProjectCategory projectCategory;
+
+    private CategoryTreeItem treeItem;
 
     public Category(String name, List<QuestionWrapper> questions){
         this.name = name;
@@ -79,4 +81,13 @@ public class Category {
         }
         return true;
     }
+
+    public CategoryTreeItem getTreeItem() {
+        return treeItem;
+    }
+
+    public void setTreeItem(CategoryTreeItem treeItem) {
+        this.treeItem = treeItem;
+    }
+
 }

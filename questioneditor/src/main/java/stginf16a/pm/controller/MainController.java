@@ -16,11 +16,9 @@ import stginf16a.pm.json.ProjectCategory;
 import stginf16a.pm.json.ProjectLoader;
 import stginf16a.pm.json.QuestionManager;
 import stginf16a.pm.questions.*;
-import stginf16a.pm.ui.AbstractTreeItem;
-import stginf16a.pm.ui.AnswerTableRow;
-import stginf16a.pm.ui.QuestionTreeItem;
-import stginf16a.pm.ui.RootTreeItem;
+import stginf16a.pm.ui.*;
 import stginf16a.pm.util.NestedObjectProperty;
+import stginf16a.pm.util.QuestionEditor;
 import stginf16a.pm.wrapper.AnswerWrapper;
 import stginf16a.pm.wrapper.QuestionWrapper;
 
@@ -75,6 +73,8 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        DragableTreeTableRow.setController(this);
+
         rootTreeItem = new SimpleObjectProperty<>();
         project = new SimpleObjectProperty<>();
 
@@ -124,16 +124,7 @@ public class MainController implements Initializable {
             }
         }));
 
-        questionTableTree.setRowFactory(param -> new TreeTableRow<Object>() {
-            @Override
-            protected void updateItem(Object item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!empty) {
-                    this.setContextMenu(((AbstractTreeItem) getTreeItem()).getMenu());
-                }
-            }
-
-        });
+        questionTableTree.setRowFactory(param -> new DragableTreeTableRow());
 
         //questionTableTree.setColumnResizePolicy((param -> true));
 
@@ -217,6 +208,28 @@ public class MainController implements Initializable {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+    }
+
+    public void moveQuestionToCategory(QuestionWrapper question, Category category) {
+        //Move Tree Item
+        //question.getCategory().getTreeItem().getChildren().remove(question.getTreeItem());
+        question.getTreeItem().delete();
+        category.getTreeItem().getChildren().add(new QuestionTreeItem(question, category.getTreeItem()::deleteQuestion, false));
+
+        //Move in Category
+        question.getCategory().getQuestions().remove(question);
+        category.getQuestions().add(question);
+        question.setCategory(category);
+
+        //Move/Recreate Json File
+        QuestionManager manager = new QuestionManager(project.get());
+        try {
+            manager.moveQuestion(question);
+        } catch (IOException e) {
+            QuestionEditor.handleException(e);
+        }
+
+        questionTableTree.refresh();
     }
 
     @FXML

@@ -6,8 +6,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import stginf16a.pm.json.Project;
+import stginf16a.pm.json.ProjectCategory;
 import stginf16a.pm.json.ProjectLoader;
 import stginf16a.pm.questions.*;
+import stginf16a.pm.ui.QuestionTreeItem;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,10 +37,14 @@ public class QuestionWrapper implements Changed{
 
     private Category category;
     private HashCode questionHash;
+    private QuestionTreeItem treeItem;
+    private boolean moved;
+    private ProjectCategory oldCategory;
 
     public QuestionWrapper(Question question){
         this.q = question;
         this.changed = false;
+        this.moved = false;
     }
 
     public static QuestionWrapper copy(QuestionWrapper question) {
@@ -283,7 +289,11 @@ public class QuestionWrapper implements Changed{
     }
 
     public void setCategory(Category category) {
-        this.category = category;
+        if (this.category != category) {
+            this.category = category;
+            this.getOriginal().setCategoryName(category.getName());
+            this.moved = true;
+        }
     }
 
     public File genQuestionFileLocation(Project project) {
@@ -307,5 +317,29 @@ public class QuestionWrapper implements Changed{
             return true;
         }
         return false;
+    }
+
+    public QuestionTreeItem getTreeItem() {
+        return treeItem;
+    }
+
+    public void setTreeItem(QuestionTreeItem treeItem) {
+        this.treeItem = treeItem;
+    }
+
+    public boolean isMoved() {
+        return moved;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
+
+    public ProjectCategory getOldCategory() {
+        return oldCategory;
+    }
+
+    public void setOldCategory(ProjectCategory oldCategory) {
+        this.oldCategory = oldCategory;
     }
 }
