@@ -20,6 +20,10 @@ public class Answer {
 
     }
 
+    public static Answer copy(Answer answer) {
+        return new Answer(answer.id, answer.answer);
+    }
+
     public int getId() {
         return id;
     }

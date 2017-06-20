@@ -42,14 +42,22 @@ public class Question {
     @JsonIgnore
     public static Question copy(Question original) {
         Question q = new Question();
-        q.answers = new ArrayList<>(original.answers);
+        q.answers = copyAnswerList(original.answers);
         q.categoryName = original.categoryName;
         q.difficulty = original.difficulty;
         q.numberOfCorrectAnswers = original.numberOfCorrectAnswers;
-        q.possibilities = new ArrayList<>(original.possibilities);
+        q.possibilities = copyAnswerList(original.possibilities);
         q.question = original.question;
         q.type = original.type;
         return q;
+    }
+
+    private static List<Answer> copyAnswerList(List<Answer> original) {
+        List<Answer> result = new ArrayList<>(original.size());
+        for (Answer answer : original) {
+            result.add(Answer.copy(answer));
+        }
+        return result;
     }
 
     public QuestionType getType() {
