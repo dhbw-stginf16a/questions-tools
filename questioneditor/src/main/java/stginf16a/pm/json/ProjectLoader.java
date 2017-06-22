@@ -1,6 +1,7 @@
 package stginf16a.pm.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
@@ -59,6 +60,7 @@ public class ProjectLoader {
         }
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         mapper.writeValue(projectFile, project);
         project.setProjectHash(calcHash(projectFile));
     }
