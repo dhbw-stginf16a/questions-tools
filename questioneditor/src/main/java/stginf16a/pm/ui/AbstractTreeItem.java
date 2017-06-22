@@ -1,24 +1,30 @@
 package stginf16a.pm.ui;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TreeItem;
+import stginf16a.pm.questions.QuestionDifficulty;
+import stginf16a.pm.questions.QuestionStatus;
+import stginf16a.pm.questions.QuestionType;
 
 /**
  * Created by Czichotzki on 21.05.2017.
  */
 public abstract class AbstractTreeItem extends TreeItem<Object>{
-    private StringProperty question;
-    private StringProperty status;
-    private StringProperty type;
-
     ContextMenu menu;
+    private StringProperty question;
+    private ObjectProperty<QuestionStatus> status;
+    private ObjectProperty<QuestionType> type;
+    private ObjectProperty<QuestionDifficulty> difficulty;
 
     AbstractTreeItem(){
         this.question = new SimpleStringProperty();
-        this.status = new SimpleStringProperty();
-        this.type = new SimpleStringProperty();
+        this.status = new SimpleObjectProperty<>();
+        this.type = new SimpleObjectProperty<>();
+        this.difficulty = new SimpleObjectProperty<>();
         menu = new ContextMenu();
     }
 
@@ -30,20 +36,28 @@ public abstract class AbstractTreeItem extends TreeItem<Object>{
         return question;
     }
 
-    public String getStatus() {
+    public QuestionStatus getStatus() {
         return status.get();
     }
 
-    public StringProperty statusProperty() {
+    public ObjectProperty<QuestionStatus> statusProperty() {
         return status;
     }
 
-    public String getType() {
+    public QuestionType getType() {
         return type.get();
     }
 
-    public StringProperty typeProperty() {
+    public ObjectProperty<QuestionType> typeProperty() {
         return type;
+    }
+
+    public QuestionDifficulty getDifficulty() {
+        return difficulty.get();
+    }
+
+    public ObjectProperty<QuestionDifficulty> difficultyProperty() {
+        return difficulty;
     }
 
     public ContextMenu getMenu() {

@@ -42,11 +42,13 @@ public class MainController implements Initializable {
     @FXML
     private TreeTableView<Object> questionTableTree;
     @FXML
-    private TreeTableColumn<Object, String> typeColumn;
+    private TreeTableColumn<Object, QuestionType> typeColumn;
     @FXML
-    private TreeTableColumn<Object, String> statusColumn;
+    private TreeTableColumn<Object, QuestionStatus> statusColumn;
     @FXML
     private TreeTableColumn<Object, String> questionColumn;
+    @FXML
+    private TreeTableColumn<Object, QuestionDifficulty> difficultyColumn;
     @FXML
     private ChoiceBox<QuestionType> typeChoiceBox;
     @FXML
@@ -102,9 +104,11 @@ public class MainController implements Initializable {
             }
         });
 
-        statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, String> p) -> ((AbstractTreeItem) p.getValue()).statusProperty());
+        statusColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, QuestionStatus> p) -> ((AbstractTreeItem) p.getValue()).statusProperty());
 
-        typeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, String> p) -> ((AbstractTreeItem) p.getValue()).typeProperty());
+        typeColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, QuestionType> p) -> ((AbstractTreeItem) p.getValue()).typeProperty());
+
+        difficultyColumn.setCellValueFactory((TreeTableColumn.CellDataFeatures<Object, QuestionDifficulty> p) -> ((AbstractTreeItem) p.getValue()).difficultyProperty());
 
         questionTableTree.setShowRoot(false);
 

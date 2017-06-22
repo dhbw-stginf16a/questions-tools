@@ -26,8 +26,9 @@ public class QuestionTreeItem extends AbstractTreeItem{
             this.question.changed();
         }
         this.questionProperty().bind(this.question.questionProperty());
-        this.statusProperty().bind(this.question.statusProperty().asString());
-        this.typeProperty().bind(this.question.typeProperty().asString());
+        this.statusProperty().bind(this.question.statusProperty());
+        this.typeProperty().bind(this.question.typeProperty());
+        this.difficultyProperty().bind(this.question.difficultyProperty());
 
         MenuItem deleteMenuItem = new MenuItem("Delete");
         deleteMenuItem.setOnAction(event -> {
