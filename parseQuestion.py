@@ -52,6 +52,10 @@ for directory in glob.glob("questions/*"):
 
 # Save approved questions and print all questions for verification
 approvedCategories = []
+# Save warnings about broken questions in draft state
+warnings = list()
+
+failed = False
 for questions in categories:
     approvedQuestions = []
     for question in questions:
@@ -63,11 +67,33 @@ for questions in categories:
         if (len(question["possibilities"]) > 0):
             for possibility in question["possibilities"]:
                 print(str(possibility["index"]) + ": " + possibility["text"] + "\n")
+        
+        try:
+             for answer in question["answers"]:
+                 print("Answer: " + answer["text"])
+        except Exception as e:
+            if (question["status"] == "draft"):
+                warning = "WARNING: Question '"
+                warning += question["question"]
+                warning += "' from category '"
+                warning += question["category"]
+                warning += "' contains invalid answers"
+                warnings.append(warning)
+                print(warning)
+            else:
+                print("ERROR")
+                print(e)
+                failed = True
+        
+        print("#" * 48, "\n")
 
-        for answer in question["answers"]:
-            print("Answer: " + answer["text"])
-            print("##############################################")
     approvedCategories.append(approvedQuestions)
+
+if (len(warnings) > 0):
+    for warning in warnings:
+        print(warning)
+if (failed):
+    exit("Some questions in review or approved state have errors.")
 
 if(len(sys.argv) > 1):
     opts, args = getopt.getopt(sys.argv[1:],"hj:p:",["generate-json","generate-pdf"])
