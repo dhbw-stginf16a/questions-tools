@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import stginf16a.pm.questions.Category;
 import stginf16a.pm.questions.Question;
+import stginf16a.pm.questions.QuestionType;
+import stginf16a.pm.wrapper.AnswerWrapper;
 import stginf16a.pm.wrapper.QuestionWrapper;
 
 import java.io.File;
@@ -76,7 +78,23 @@ public class QuestionManager {
         question.setId(UUID.fromString(id));
         QuestionWrapper wrapper = new QuestionWrapper(question);
         wrapper.setQuestionHash(ProjectLoader.calcHash(file));
+        fixAnswers(wrapper);
         return wrapper;
+    }
+
+    private void fixAnswers(QuestionWrapper question) {
+        if (question.getType() == QuestionType.MULTIPLE_CHOICE) {
+            for (AnswerWrapper wrapper : question.getAnswers()) {
+                for (AnswerWrapper pos :
+                        question.getPossibilities()) {
+                    if (pos.equals(wrapper)) {
+                        question.getAnswers().remove(wrapper);
+                        question.getAnswers().add(pos);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private void saveQuestion(QuestionWrapper question, File file) throws IOException {
