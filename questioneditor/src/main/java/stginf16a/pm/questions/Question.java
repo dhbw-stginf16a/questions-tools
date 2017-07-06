@@ -142,7 +142,7 @@ public class Question {
         return this.categoryName;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }

@@ -66,7 +66,11 @@ public class QuestionManager {
         for (File file :
                 files != null ? files : new File[0]) {
             QuestionWrapper q = loadQuestion(file);
+
             q.setOldCategory(category);
+            if (!q.getOriginal().getCategoryName().equals(category.getCategoryName())) {
+                q.changed();
+            }
             q.getOriginal().setCategoryName(category.getCategoryName());
             result.add(q);
         }
