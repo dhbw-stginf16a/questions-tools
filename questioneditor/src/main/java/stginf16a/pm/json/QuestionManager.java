@@ -11,6 +11,7 @@ import stginf16a.pm.wrapper.QuestionWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,16 +85,24 @@ public class QuestionManager {
 
     private void fixAnswers(QuestionWrapper question) {
         if (question.getType() == QuestionType.MULTIPLE_CHOICE) {
-            for (AnswerWrapper wrapper : question.getAnswers()) {
-                for (AnswerWrapper pos :
-                        question.getPossibilities()) {
+            List<AnswerWrapper> newAnswers = new ArrayList<>();
+            Iterator<AnswerWrapper> answers = question.getAnswers().iterator();
+            while (answers.hasNext()) {
+                AnswerWrapper wrapper = answers.next();
+                Iterator<AnswerWrapper> possibilities = question.getPossibilities().iterator();
+                while (possibilities.hasNext()) {
+                    AnswerWrapper pos = possibilities.next();
                     if (pos.equals(wrapper)) {
-                        question.getAnswers().remove(wrapper);
-                        question.getAnswers().add(pos);
+                        if (!wrapper.getAnswer().equals(pos.getAnswer())) {
+                            question.changed();
+                        }
+                        answers.remove();
+                        newAnswers.add(pos);
                         break;
                     }
                 }
             }
+            question.getAnswers().addAll(newAnswers);
         }
     }
 
