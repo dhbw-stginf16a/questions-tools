@@ -97,10 +97,10 @@ for questions in categories:
         # Print a nice name for the difficulty
         difficulty = "Difficulty: "
 
-        if (question["difficulty"] == 0):
+        if (question["difficulty"] == 1):
             difficulty += "Easy"
 
-        elif (question["difficulty"] == 1):
+        elif (question["difficulty"] == 2):
             difficulty += "Medium"
         
         else:
