@@ -3,6 +3,21 @@ import json
 import glob, os
 import sys, getopt
 
+class Tee(object):
+    def __init__(self, *files):
+        self.files = files
+    def write(self, obj):
+        for f in self.files:
+            f.write(obj)
+            f.flush() # If you want the output to be visible immediately
+    def flush(self) :
+        for f in self.files:
+            f.flush()
+
+f = open('QuestionPrint.txt', 'w')
+original = sys.stdout
+sys.stdout = Tee(sys.stdout, f)
+
 def generateJSON(categories):
     version = "1.0"
     exportFile = ""
@@ -42,7 +57,6 @@ def generatePDF(questions):
 
 categories = []
 for directory in glob.glob("questions/*"):
-    print(directory)
     questions = []
     for question in glob.glob(directory + "/*.json"):
         with open(question, encoding='utf-8') as data_file:
