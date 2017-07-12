@@ -62,6 +62,38 @@ for questions in categories:
         if (question["status"] == "approved" and question["category"] != "Test"):
             approvedQuestions.append(question)
         print("Category: " +  question["category"])
+
+        # Print a nice name for the question type
+        qType = "Type: "
+
+        if (question["type"] == "multipleChoice"):
+            qType += "Multiple Choice"
+
+        elif (question["type"] == "fillIn"):
+            qType += "Fill the Gap"
+
+        elif (question["type"] == "wildcard"):
+            qType += "Free Guess"
+        
+        else:
+            qType += "List"
+
+        print(qType)
+
+        # Print a nice name for the difficulty
+        difficulty = "Difficulty: "
+
+        if (question["difficulty"] == 0):
+            difficulty += "Easy"
+
+        elif (question["difficulty"] == 1):
+            difficulty += "Medium"
+        
+        else:
+            difficulty += "Hard"
+
+        print(difficulty)
+
         print("Question: " + question["question"] + "\n \n")
 
         if (len(question["possibilities"]) > 0):
@@ -95,7 +127,7 @@ if (len(warnings) > 0):
 if (failed):
     exit("Some questions in review or approved state have errors.")
 
-if(len(sys.argv) > 1):
+if (len(sys.argv) > 1):
     opts, args = getopt.getopt(sys.argv[1:],"hj:p:",["generate-json","generate-pdf"])
     for opt, arg in opts:
       if (opt == '-h'):
